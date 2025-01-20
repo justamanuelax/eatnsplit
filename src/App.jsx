@@ -6,13 +6,12 @@ import "./index.css";
 function App() {
 
   return (
-    <>
+  
       <div className="app">
         <div className="sidebar">
           <Friendlist />
         </div>
       </div>
-    </>
   )
 }
 
@@ -30,30 +29,36 @@ function Friendlist(){
   )
 }
 
-function Friend([friendy]){
-  Friend.PropTypes = {
-    friendy: PropTypes.array
+function Friend({ friendy }){
+  Friend.propTypes = {
+    friendy: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
+      balance: PropTypes.number.isRequired
+    }).isRequired
   }
   return(
     <li>
-      <img src={friendy} alt={friendy.name} />
+      <img src={friendy.image} alt={friendy.name} />
       <h3>{friendy.name}</h3>
 
       {friendy.balance < 0 && (
         <p className="red">
-            You owe {friendy.name} ${Math.abs(friendy.balance) }
+            You owe {friendy.name} $ {Math.abs(friendy.balance) }
         </p>
       )}
       {friendy.balance > 0 && (
         <p className="green">
-            You owe {friendy.name} ${Math.abs(friendy.balance) }
+          {friendy.name} owes me ${Math.abs(friendy.balance) }
         </p>
       )}
-      {friendy.balance < 0 && (
-        <p className="red">
-            You owe {friendy.name} ${Math.abs(friendy.balance) }
+      {friendy.balance === 0 && (
+        <p>
+          Me and {friendy.name} are even ${Math.abs(friendy.balance) }
         </p>
       )}
+      <button className="button">Select</button>
     </li>
   )
 }
