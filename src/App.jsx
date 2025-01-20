@@ -10,6 +10,8 @@ function App() {
       <div className="app">
         <div className="sidebar">
           <Friendlist />
+          <FormAddFriend/>
+          <Button>Add Friends</Button>
         </div>
       </div>
   )
@@ -58,9 +60,31 @@ function Friend({ friendy }){
           Me and {friendy.name} are even ${Math.abs(friendy.balance) }
         </p>
       )}
-      <button className="button">Select</button>
+  <Button>Select</Button>
     </li>
+)
+}
+
+function Button({children}){
+  Button.propTypes = {
+    children: PropTypes.string
+  }
+  return(
+    <button className="button">{children}</button>
   )
 }
 
+function FormAddFriend(){
+  return(
+    <form className="form-add-friend">
+      <label>
+      🧑‍🦰👩‍🦰  Friend Name : 
+      </label>
+      <input type="text" />
+      <label htmlFor="">🖼️ Image URL</label>
+      <input type="text" />
+        <Button>Add</Button>
+    </form>
+  )
+}
 export default App
