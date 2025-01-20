@@ -16,18 +16,25 @@ function Button({children, onClick}){
 
 
 function App() {
-    const [showAddFriend, setShowAddFriend] = useState(false);
+  const [showAddFriend, setShowAddFriend] = useState(false);
+  const [friends, setFriends] = useState(initialFriends)
   
     function handleShowAtFriend(){
       setShowAddFriend((show) => !show)
+    }
+    function handleAddFriend(friend){
+      setFriends(friends => [...friends, friend]);
+      // Don't mutate the prop just use state like this and pass it like this.
+      // spread all the current elements and adding the friend as shoen.
+      setShowAddFriend(true);
     }
   
     return (
   
       <div className="app">
         <div className="sidebar">
-          <Friendlist />
-          {showAddFriend && <FormAddFriend/>}
+          <Friendlist friends={friends} />
+          {showAddFriend && <FormAddFriend onAddFriend={handleAddFriend}/>}
           <Button onClick={handleShowAtFriend}>{showAddFriend ? "Close " : "Add Friends"}</Button>
 
         </div>
@@ -36,13 +43,16 @@ function App() {
   )
 }
 
-function Friendlist(){
-    const friends = initialFriends;
+function Friendlist({friends}){
+  Friendlist.propTypes = {
+    friends: PropTypes.array
+  }
+    
   
   return(
     <ul>
       {friends.map((friend) => (
-        <Friend friendy={friend} key={friend.id} />
+        <Friend friend={friend} key={friend.id} />
 
       ))}
     </ul>
@@ -50,33 +60,33 @@ function Friendlist(){
   )
 }
 
-function Friend({ friendy }){
+function Friend({ friend }){
   Friend.propTypes = {
-    friendy: PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
-      image: PropTypes.string.isRequired,
-      balance: PropTypes.number.isRequired
-    }).isRequired
+    friend: PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      image: PropTypes.string,
+      balance: PropTypes.number
+    })
   }
   return(
     <li>
-      <img src={friendy.image} alt={friendy.name} />
-      <h3>{friendy.name}</h3>
+      <img src={friend.image} alt={friend.name} />
+      <h3>{friend.name}</h3>
 
-      {friendy.balance < 0 && (
+      {friend.balance < 0 && (
         <p className="red">
-            You owe {friendy.name} $ {Math.abs(friendy.balance) }
+            You owe {friend.name} $ {Math.abs(friend.balance) }
         </p>
       )}
-      {friendy.balance > 0 && (
+      {friend.balance > 0 && (
         <p className="green">
-          {friendy.name} owes me ${Math.abs(friendy.balance) }
+          {friend.name} owes me ${Math.abs(friend.balance) }
         </p>
       )}
-      {friendy.balance === 0 && (
+      {friend.balance === 0 && (
         <p>
-          Me and {friendy.name} are even ${Math.abs(friendy.balance) }
+          Me and {friend.name} are even ${Math.abs(friend.balance) }
         </p>
       )}
   <Button>Select</Button>
@@ -85,19 +95,43 @@ function Friend({ friendy }){
 }
 
 
-function FormAddFriend(){
+function FormAddFriend({onAddFriend}){
+  FormAddFriend.propTypes = {
+    onAddFriend: PropTypes.func.isRequired
+      
+  }
+  const [name , setName] = useState("");
+  const [image, setImage] = useState("https://i.pravatar.cc/48?u=499476");
+  function handleSubmit(e){
+    e.preventDefault();
+    
+      if(!name || !image) return;
+      
+    const id = crypto.randomUUID();
+    const newFriend = {
+      name,
+      id,
+      image: `${image}?=${id}`,
+      balance: 0,
+    }
+    
+    onAddFriend(newFriend);
+    setName("");
+    setImage("https://i.pravatar.cc/48?u=499476");
+  }
   return(
-    <form className="form-add-friend">
+    <form className="form-add-friend" onSubmit={handleSubmit} >
       <label>
       🧑‍🦰👩‍🦰 Friend Name: 
       </label>
-      <input type="text" />
-      <label htmlFor="">🖼️ Image URL</label>
-      <input type="text" />
+      <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+      <label>🖼️ Image URL</label>
+      <input type="text"  value={image} onChange={(e) => setImage(e.target.value)}/>
         <Button>Add</Button>
     </form>
   )
 }
+
 function FormSplitBill(){
   return(
     <form className="form-split-bill">
