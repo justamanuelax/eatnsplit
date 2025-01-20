@@ -1,17 +1,35 @@
 import PropTypes from "prop-types";
 import { initialFriends } from "./Appa.js";
 import "./index.css";
+import {useState} from "react";
+
+function Button({children, onClick}){
+  Button.propTypes = {
+    children: PropTypes.string,
+    onClick: PropTypes.func
+  }
+  return(
+    <button className="button" onClick={onClick}>{children}</button>
+  )
+}
+
 
 
 function App() {
-
-  return (
+    const [showAddFriend, setShowAddFriend] = useState(false);
+  
+    function handleShowAtFriend(){
+      setShowAddFriend((show) => !show)
+    }
+  
+    return (
   
       <div className="app">
         <div className="sidebar">
           <Friendlist />
-          <FormAddFriend/>
-          <Button>Add Friends</Button>
+          {showAddFriend && <FormAddFriend/>}
+          <Button onClick={handleShowAtFriend}>{showAddFriend ? "Close " : "Add Friends"}</Button>
+
         </div>
       <FormSplitBill/>
       </div>
@@ -66,20 +84,12 @@ function Friend({ friendy }){
 )
 }
 
-function Button({children}){
-  Button.propTypes = {
-    children: PropTypes.string
-  }
-  return(
-    <button className="button">{children}</button>
-  )
-}
 
 function FormAddFriend(){
   return(
     <form className="form-add-friend">
       <label>
-      🧑‍🦰👩‍🦰  Friend Name : 
+      🧑‍🦰👩‍🦰 Friend Name: 
       </label>
       <input type="text" />
       <label htmlFor="">🖼️ Image URL</label>
