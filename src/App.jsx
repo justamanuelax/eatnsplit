@@ -36,7 +36,10 @@ function App() {
       setShowAddFriend(false);
     }
 
-
+   function handleSplitBill(value){
+        
+       setFriends((friends) => friends.map((friend) => friend.id === selectedFriend.id ? {...friend, balance: friend.balance + value} : friend))
+    }
 
     return (
   
@@ -49,7 +52,7 @@ function App() {
           <Button onClick={handleShowAtFriend}>{showAddFriend ? "Close " : "Add Friends"}</Button>
 
         </div>
-      {selectedFriend &&<FormSplitBill selectedFriend={selectedFriend}/>}
+      {selectedFriend &&<FormSplitBill selectedFriend={selectedFriend} onSplitBill={handleSplitBill}/>}
       </div>
   )
 }
@@ -148,16 +151,26 @@ function FormAddFriend({onAddFriend}){
   )
 }
 
-function FormSplitBill({selectedFriend}){
+function FormSplitBill({selectedFriend, onSplitBill}){
   const [bill, setBill] = useState("");
   const [paidByUser, setPaidByUser] = useState("");
   const paidByFriend = bill ? bill - paidByUser : "";
   const [WhoIsPaying, setWhoIsPaying] = useState("");
   FormSplitBill.propTypes = {
-    selectedFriend: PropTypes.object
+    selectedFriend: PropTypes.object,
+    onSplitBill: PropTypes.func
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    if(!bill || !paidByUser) return;
+
+    onSplitBill(WhoIsPaying === "user" ? paidByFriend : -paidByUser);
+
   }
   return(
-    <form className="form-split-bill">
+    <form className="form-split-bill" onSubmit={handleSubmit}>
       <h2> Split a bill with {selectedFriend.name}  </h2>
       
       <label>💰 Bill Value</label>
