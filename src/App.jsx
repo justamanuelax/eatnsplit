@@ -208,7 +208,7 @@ function FormSplitBill({ selectedFriend, onSplitBill }) {
 
     if (!bill || !paidByUser) return; // Validate inputs
 
-    onSplitBill(WhoIsPaying === "user" ? -paidByUser : paidByUser); // Update balances
+    onSplitBill(WhoIsPaying === "user" ? paidByFriend : -paidByUser); // Update balances
   }
 
   return (
